@@ -2,11 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { CssBaseline } from '@material-ui/core';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 
-import { Navbar, Products, Cart, Checkout } from './components';
+import { Products, Cart, Checkout } from './components';
+import NavBar from './components/Navbar';
+
 import { commerce } from './lib/commerce';
 
 const App = () => {
-  const [mobileOpen, setMobileOpen] = React.useState(false);
   const [products, setProducts] = useState([]);
   const [cart, setCart] = useState({});
   const [order, setOrder] = useState({});
@@ -69,13 +70,18 @@ const App = () => {
     fetchCart();
   }, []);
 
-  const handleDrawerToggle = () => setMobileOpen(!mobileOpen);
-
   return (
     <Router>
-      <div style={{ display: 'flex' }}>
+      <div>
         <CssBaseline />
-        <Navbar totalItems={cart.total_items} handleDrawerToggle={handleDrawerToggle} />
+        <NavBar
+          basketItems={cart.total_items}
+          totalCost={
+            (cart.subtotal
+              && cart.subtotal.formatted_with_symbol)
+            || '00.00'
+          }
+        />
         <Switch>
           <Route exact path="/">
             <Products products={products} onAddToCart={handleAddToCart} handleUpdateCartQty />
